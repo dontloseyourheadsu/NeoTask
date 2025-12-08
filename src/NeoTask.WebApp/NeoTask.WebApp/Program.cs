@@ -23,6 +23,12 @@ builder.Services.AddAuthentication(options =>
         options.DefaultScheme = IdentityConstants.ApplicationScheme;
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
+    .AddMicrosoftAccount(options =>
+    {
+        var microsoftAuthConfig = builder.Configuration.GetSection("Authentication:Microsoft");
+        options.ClientId = microsoftAuthConfig["ClientId"] ?? throw new InvalidOperationException("Microsoft ClientId not configured.");
+        options.ClientSecret = microsoftAuthConfig["ClientSecret"] ?? throw new InvalidOperationException("Microsoft ClientSecret not configured.");
+    })
     .AddIdentityCookies();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
