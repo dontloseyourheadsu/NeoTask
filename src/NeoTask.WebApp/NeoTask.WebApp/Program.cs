@@ -29,6 +29,12 @@ builder.Services.AddAuthentication(options =>
         options.ClientId = microsoftAuthConfig["ClientId"] ?? throw new InvalidOperationException("Microsoft ClientId not configured.");
         options.ClientSecret = microsoftAuthConfig["ClientSecret"] ?? throw new InvalidOperationException("Microsoft ClientSecret not configured.");
     })
+    .AddGoogle(options =>
+    {
+        var googleAuthConfig = builder.Configuration.GetSection("Authentication:Google");
+        options.ClientId = googleAuthConfig["ClientId"] ?? throw new InvalidOperationException("Google ClientId not configured.");
+        options.ClientSecret = googleAuthConfig["ClientSecret"] ?? throw new InvalidOperationException("Google ClientSecret not configured.");
+    })
     .AddIdentityCookies();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
