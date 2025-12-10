@@ -13,7 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="../NeoTask.WebApp/NeoTask.WebApp/NeoTask.WebApp.csproj" />
     <ProjectReference Include="..\NeoTask.ApiService\NeoTask.ApiService.csproj" />
-    <ProjectReference Include="..\NeoTask.Web\NeoTask.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
