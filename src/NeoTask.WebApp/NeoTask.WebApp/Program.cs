@@ -41,13 +41,16 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
+builder.AddNpgsqlDbContext<PostgresDbContext>("neotaskdb");
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<ApplicationDbContext>();
+    .AddDbContextCheck<ApplicationDbContext>()
+    .AddDbContextCheck<PostgresDbContext>();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
     {
