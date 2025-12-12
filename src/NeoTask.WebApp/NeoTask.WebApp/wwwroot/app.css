@@ -1,19 +1,70 @@
-html, body {
+html,
+body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
-a, .btn-link {
-    color: #006bb7;
+:root {
+    /* Default (Calm Focus) */
+    --bg-primary: #FAFAFA;
+    --text-primary: #2F3E46;
+    --action-color: #8FBC8F;
+    /* Sage Green */
+    --action-color-secondary: #778DA9;
+    /* Dusty Blue */
+    --sidebar-bg: #778DA9;
+    --btn-text: #fff;
+}
+
+.theme-calm {
+    --bg-primary: #FAFAFA;
+    --text-primary: #2F3E46;
+    --action-color: #8FBC8F;
+    --action-color-secondary: #778DA9;
+    --sidebar-bg: #778DA9;
+    --btn-text: #fff;
+}
+
+.theme-low-sensory {
+    --bg-primary: #EAE7E2;
+    --text-primary: #363636;
+    --action-color: #BDB2FF;
+    /* Muted Lavender */
+    --action-color-secondary: #84B6F4;
+    /* Soft Teal */
+    --sidebar-bg: #84B6F4;
+    --btn-text: #fff;
+}
+
+.theme-high-dopamine {
+    --bg-primary: #121212;
+    --text-primary: #E0E0E0;
+    --action-color: #FFADAD;
+    /* Coral */
+    --action-color-secondary: #FDFFB6;
+    /* Sunny Yellow */
+    --sidebar-bg: #1E1E1E;
+    --btn-text: #121212;
+}
+
+a,
+.btn-link {
+    color: var(--action-color-secondary);
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    color: var(--btn-text);
+    background-color: var(--action-color);
+    border-color: var(--action-color);
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--action-color-secondary);
 }
 
 .content {
@@ -42,19 +93,21 @@ h1:focus {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
-    }
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+.form-floating>.form-control-plaintext::placeholder,
+.form-floating>.form-control::placeholder {
     color: var(--bs-secondary-color);
     text-align: end;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+.form-floating>.form-control-plaintext:focus::placeholder,
+.form-floating>.form-control:focus::placeholder {
     text-align: start;
 }
