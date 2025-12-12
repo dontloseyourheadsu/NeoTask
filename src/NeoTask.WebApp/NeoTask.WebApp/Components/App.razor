@@ -14,11 +14,19 @@
     <HeadOutlet />
 </head>
 
-<body>
+<body class="@ThemeClass">
     <Routes />
     <ReconnectModal />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="@Assets["Components/Account/Shared/PasskeySubmit.razor.js"]" type="module"></script>
+    <script src="js/theme.js"></script>
 </body>
 
 </html>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    private string ThemeClass => HttpContext.Request.Cookies["theme"] ?? "theme-calm";
+}
