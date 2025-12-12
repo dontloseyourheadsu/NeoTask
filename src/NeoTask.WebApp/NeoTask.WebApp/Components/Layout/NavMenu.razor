@@ -1,5 +1,6 @@
 ﻿@implements IDisposable
 
+@using NeoTask.WebApp.Components.Customization
 @inject NavigationManager NavigationManager
 
 <div class="top-row ps-3 navbar navbar-dark">
@@ -66,6 +67,10 @@
                 </div>
             </NotAuthorized>
         </AuthorizeView>
+
+        <div class="nav-item px-3 mt-auto">
+            <ThemeSwitcher />
+        </div>
     </nav>
 </div>
 
@@ -89,4 +94,3 @@
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 }
-
