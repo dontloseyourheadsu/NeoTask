@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NeoTask.WebApp.Client.Pages;
 using NeoTask.WebApp.Components;
 using NeoTask.WebApp.Components.Account;
+using NeoTask.WebApp.Components.Customization;
 using NeoTask.WebApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
+
+builder.Services.AddScoped<ThemeState>();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
@@ -49,15 +52,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<ApplicationDbContext>()
-    .AddDbContextCheck<PostgresDbContext>();
+    .AddDbContextCheck<ApplicationDbContext>();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
     {
         options.SignIn.RequireConfirmedAccount = true;
         options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
     })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddEntityFrameworkStores<PostgresDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
