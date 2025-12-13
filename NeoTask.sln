@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeoTask.WebApp", "src\NeoTa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeoTask.WebApp.Client", "src\NeoTask.WebApp\NeoTask.WebApp.Client\NeoTask.WebApp.Client.csproj", "{0431E2D0-7051-4AEA-AB03-0E341E863F61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeoTask.Domain", "src\NeoTask.Domain\NeoTask.Domain.csproj", "{32817F21-F079-4EFC-9354-9E2EF5579752}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,18 @@ Global
 		{0431E2D0-7051-4AEA-AB03-0E341E863F61}.Release|x64.Build.0 = Release|Any CPU
 		{0431E2D0-7051-4AEA-AB03-0E341E863F61}.Release|x86.ActiveCfg = Release|Any CPU
 		{0431E2D0-7051-4AEA-AB03-0E341E863F61}.Release|x86.Build.0 = Release|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Debug|x64.Build.0 = Debug|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Debug|x86.Build.0 = Debug|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Release|x64.ActiveCfg = Release|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Release|x64.Build.0 = Release|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Release|x86.ActiveCfg = Release|Any CPU
+		{32817F21-F079-4EFC-9354-9E2EF5579752}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,6 +124,7 @@ Global
 		{7D2BB728-92CE-B012-3996-3A18D11632B5} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{296C1978-A0FE-4DB9-93E9-0DB69A86F972} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{0431E2D0-7051-4AEA-AB03-0E341E863F61} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{32817F21-F079-4EFC-9354-9E2EF5579752} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E5D7650-0B61-4793-A3B5-51C92CB55F14}

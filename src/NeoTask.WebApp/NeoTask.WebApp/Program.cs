@@ -20,6 +20,7 @@ builder.Services.AddRazorComponents()
     .AddAuthenticationStateSerialization();
 
 builder.Services.AddScoped<ThemeState>();
+builder.Services.AddScoped<NeoTask.WebApp.Services.IScrollInfoService, NeoTask.WebApp.Services.ScrollInfoService>();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
