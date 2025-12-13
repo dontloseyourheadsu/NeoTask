@@ -3,9 +3,9 @@ using Microsoft.JSInterop;
 
 namespace NeoTask.WebApp.Services
 {
-    public class ScrollInfoService: IScrollInfoService
+    public class ScrollInfoService : IScrollInfoService
     {
-        public event EventHandler<int> OnScroll; 
+        public event EventHandler<int> OnScroll;
 
         public ScrollInfoService(IJSRuntime jsRuntime)
         {
