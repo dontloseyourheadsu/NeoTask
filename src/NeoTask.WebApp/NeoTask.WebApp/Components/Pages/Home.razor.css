@@ -1,0 +1,179 @@
+.focus-container {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    /* Adjust to fit within the layout */
+    background-color: var(--bg-primary);
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    color: var(--text-primary);
+    border-radius: 8px;
+}
+
+.task-list-container {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    /* Always hidden, controlled by buttons/wheel */
+    padding: 20px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+.task-list-container.focus-mode {
+    overflow-y: hidden;
+}
+
+.task-card {
+    background-color: var(--sidebar-bg);
+    border-radius: 12px;
+    padding: 15px;
+    width: 60%;
+    margin: 10px 0;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.8;
+    /* More visible by default */
+    transform: scale(1);
+    min-height: 100px;
+    /* Reasonable default height */
+    border: 1px solid transparent;
+    color: var(--text-primary);
+    flex-shrink: 0;
+}
+
+.task-card:hover {
+    opacity: 1;
+    filter: brightness(1.1);
+    transform: scale(1.02);
+}
+
+.task-card.focused {
+    width: 85%;
+    min-height: 60vh;
+    /* Reduced height as requested */
+    opacity: 1;
+    transform: scale(1);
+    background-color: var(--bg-primary);
+    border: 2px solid var(--action-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    margin: 20px 0;
+    justify-content: flex-start;
+    padding-top: 40px;
+}
+
+.task-card.dimmed {
+    opacity: 0.4;
+    transform: scale(0.9);
+}
+
+.controls {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--sidebar-bg);
+    border-left: 1px solid var(--action-color-secondary);
+    z-index: 2001;
+}
+
+.control-btn {
+    width: 70px;
+    height: 70px;
+    background-color: var(--action-color);
+    color: var(--btn-text);
+    border: none;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.control-btn:hover {
+    filter: brightness(1.1);
+}
+
+.control-btn span {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.unfocus-btn {
+    position: absolute;
+    top: 20px;
+    right: 120px;
+    padding: 10px 20px;
+    background-color: var(--action-color-secondary);
+    color: var(--btn-text);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    z-index: 2002;
+    transition: filter 0.2s;
+}
+
+.unfocus-btn:hover {
+    filter: brightness(1.1);
+}
+
+.focused-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.task-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 30px;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.break-down-btn {
+    margin-top: 40px;
+    padding: 15px 30px;
+    background-color: var(--action-color);
+    color: var(--btn-text);
+    border: none;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.break-down-btn:hover {
+    transform: scale(1.05);
+}
+
+.task-desc {
+    margin-top: 30px;
+    color: var(--text-primary);
+    opacity: 0.8;
+    max-width: 80%;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.dimmed-title {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    opacity: 0.7;
+}

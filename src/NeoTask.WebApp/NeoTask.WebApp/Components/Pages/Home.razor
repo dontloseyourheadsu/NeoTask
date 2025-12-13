@@ -1,7 +1,198 @@
 ﻿@page "/"
+@using NeoTask.Domain.Tasks.Attributes
+@using DomainTask = NeoTask.Domain.Tasks.Task
+@using NeoTask.WebApp.Services
+@inject IScrollInfoService scrollInfoService
+@inject IJSRuntime JSRuntime
+@implements IDisposable
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="focus-container">
+    @if (FocusedTask != null)
+    {
+        <button class="unfocus-btn" @onclick="Unfocus">Unfocus Task</button>
+    }
 
-Welcome to your new app.
+    <div class="task-list-container" id="taskList">
+        @foreach (var task in VisibleTasks)
+        {
+            <div id="@($"task-{task.Id}")" class="task-card @GetTaskClass(task)" @onclick="() => SelectTask(task)">
+
+                @if (task.Id == FocusedTask?.Id)
+                {
+                    <div class="focused-content">
+                        <h1 class="task-title">@task.Title</h1>
+                        <button class="break-down-btn" @onclick:stopPropagation="true">Break Down</button>
+                        <p class="task-desc">@task.Description</p>
+                    </div>
+                }
+                else
+                {
+                    <span class="dimmed-title">@task.Title</span>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" @onclick="MoveUp">
+            <span class="material-icons">arrow_upward</span>
+            <span>Up</span>
+        </button>
+        <button class="control-btn" @onclick="MoveDown">
+            <span class="material-icons">arrow_downward</span>
+            <span>Down</span>
+        </button>
+    </div>
+</div>
+
+@code {
+    private List<DomainTask> AllTasks = new();
+    private LinkedList<DomainTask> VisibleTasks = new();
+    private DomainTask? FocusedTask;
+    private int _firstVisibleIndex = 0;
+    private const int _windowSize = 10;
+
+    protected override void OnInitialized()
+    {
+        // Generate 20 mock tasks
+        for (int i = 1; i <= 20; i++)
+        {
+            AllTasks.Add(new DomainTask
+            {
+                Id = Guid.NewGuid(),
+                Title = $"Task {i}",
+                Description = $"This is the detailed description for Task {i}. It contains important information about what needs to be done.",
+                Status = NeoTaskStatus.ToDo,
+                Priority = NeoTaskPriority.Medium
+            });
+        }
+
+        // Initialize VisibleTasks with the first 10 tasks
+        foreach (var task in AllTasks.Take(_windowSize))
+        {
+            VisibleTasks.AddLast(task);
+        }
+
+        // Initial view: List view (no focus)
+        FocusedTask = null;
+
+        scrollInfoService.OnScroll += OnScroll;
+    }
+
+    private void OnScroll(object? sender, int yValue)
+    {
+        // yValue from wheel event is deltaY (positive = down, negative = up)
+        // Or scroll position if actual scroll.
+        // Since we use wheel for navigation in fixed container:
+        if (yValue > 0)
+        {
+            InvokeAsync(MoveDown);
+        }
+        else if (yValue < 0)
+        {
+            InvokeAsync(MoveUp);
+        }
+    }
+
+    public void Dispose()
+    {
+        scrollInfoService.OnScroll -= OnScroll;
+    }
+
+    private string GetTaskClass(DomainTask task)
+    {
+        if (FocusedTask?.Id == task.Id) return "focused";
+        if (FocusedTask != null) return "dimmed";
+        return "";
+    }
+
+    private void SelectTask(DomainTask task)
+    {
+        FocusedTask = task;
+        StateHasChanged();
+    }
+
+    private void Unfocus()
+    {
+        FocusedTask = null;
+        StateHasChanged();
+    }
+
+    private void MoveUp()
+    {
+        if (FocusedTask == null)
+        {
+            ScrollUp();
+        }
+        else
+        {
+            var index = AllTasks.FindIndex(t => t.Id == FocusedTask.Id);
+            if (index > 0)
+            {
+                FocusedTask = AllTasks[index - 1];
+                // If the new focused task is above the visible window, scroll up
+                if (index - 1 < _firstVisibleIndex)
+                {
+                    ScrollUp();
+                }
+            }
+        }
+    }
+
+    private void MoveDown()
+    {
+        if (FocusedTask == null)
+        {
+            ScrollDown();
+        }
+        else
+        {
+            var index = AllTasks.FindIndex(t => t.Id == FocusedTask.Id);
+            if (index < AllTasks.Count - 1)
+            {
+                FocusedTask = AllTasks[index + 1];
+                // If the new focused task is below the visible window, scroll down
+                if (index + 1 >= _firstVisibleIndex + _windowSize)
+                {
+                    ScrollDown();
+                }
+            }
+        }
+    }
+
+    private void ScrollUp()
+    {
+        if (_firstVisibleIndex > 0)
+        {
+            VisibleTasks.RemoveLast();
+            _firstVisibleIndex--;
+            VisibleTasks.AddFirst(AllTasks[_firstVisibleIndex]);
+            StateHasChanged();
+        }
+    }
+
+    private void ScrollDown()
+    {
+        if (_firstVisibleIndex + _windowSize < AllTasks.Count)
+        {
+            VisibleTasks.RemoveFirst();
+            VisibleTasks.AddLast(AllTasks[_firstVisibleIndex + _windowSize]);
+            _firstVisibleIndex++;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ScrollToTask(Guid taskId)
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("eval", $"document.getElementById('task-{taskId}').scrollIntoView({{ behavior: 'smooth', block: 'center' }})");
+        }
+        catch
+        {
+            // Ignore JS errors for now
+        }
+    }
+}
