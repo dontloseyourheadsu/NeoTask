@@ -97,6 +97,14 @@
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await scrollInfoService.InitializeAsync();
+        }
+    }
+
     public void Dispose()
     {
         scrollInfoService.OnScroll -= OnScroll;
@@ -140,6 +148,7 @@
                 }
             }
         }
+        StateHasChanged();
     }
 
     private void MoveDown()
@@ -161,6 +170,7 @@
                 }
             }
         }
+        StateHasChanged();
     }
 
     private void ScrollUp()
