@@ -5,19 +5,17 @@ namespace NeoTask.WebApp.Services
 {
     public class ScrollInfoService : IScrollInfoService
     {
-        public event EventHandler<int> OnScroll;
+        public event EventHandler<int>? OnScroll;
+        private readonly IJSRuntime _jsRuntime;
 
         public ScrollInfoService(IJSRuntime jsRuntime)
         {
-            RegisterServiceViaJsRuntime(jsRuntime);
+            _jsRuntime = jsRuntime;
         }
 
-        private void RegisterServiceViaJsRuntime(IJSRuntime jsRuntime)
+        public async Task InitializeAsync()
         {
-            // We don't await here because we can't in a constructor. 
-            // In a real app, this might be better in an async initialization method.
-            // But following the user's snippet:
-            jsRuntime.InvokeVoidAsync("RegisterScrollInfoService", DotNetObjectReference.Create(this));
+            await _jsRuntime.InvokeVoidAsync("RegisterScrollInfoService", DotNetObjectReference.Create(this));
         }
 
         public int YValue { get; private set; }
