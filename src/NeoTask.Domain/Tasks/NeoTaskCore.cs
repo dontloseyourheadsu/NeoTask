@@ -5,7 +5,7 @@ namespace NeoTask.Domain.Tasks;
 /// <summary>
 /// Represents a core task in the NeoTask system.
 /// </summary>
-public class Task
+public class NeoTaskCore
 {
     /// <summary>
     /// Gets or sets the unique identifier for the task.
@@ -31,4 +31,14 @@ public class Task
     /// Gets or sets the priority of the task.
     /// </summary>
     public required NeoTaskPriority Priority { get; set; }
+
+    /// <summary>
+    /// Gets or sets the goal date/time for the task.
+    /// </summary>
+    public DateTime? GoalDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the estimated duration of the task.
+    /// </summary>
+    public TimeSpan? EstimatedDuration { get; set; }
 }
