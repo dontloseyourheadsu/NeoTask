@@ -21,6 +21,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<ThemeState>();
 builder.Services.AddScoped<NeoTask.WebApp.Services.IScrollInfoService, NeoTask.WebApp.Services.ScrollInfoService>();
+builder.Services.AddSingleton<NeoTask.WebApp.Services.Tasks.Queries.ITaskQueryService, NeoTask.WebApp.Services.Tasks.Queries.TaskQueryService>();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();

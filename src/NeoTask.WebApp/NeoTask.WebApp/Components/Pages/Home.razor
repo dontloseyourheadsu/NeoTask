@@ -1,8 +1,11 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 @using NeoTask.Domain.Tasks.Attributes
-@using DomainTask = NeoTask.Domain.Tasks.Task
+@using NeoTask.Domain.Tasks
 @using NeoTask.WebApp.Services
+@using NeoTask.WebApp.Services.Tasks.Queries
 @inject IScrollInfoService scrollInfoService
+@inject ITaskQueryService TaskService
 @inject IJSRuntime JSRuntime
 @implements IDisposable
 
@@ -48,26 +51,15 @@
 </div>
 
 @code {
-    private List<DomainTask> AllTasks = new();
-    private LinkedList<DomainTask> VisibleTasks = new();
-    private DomainTask? FocusedTask;
+    private List<NeoTaskCore> AllTasks = new();
+    private LinkedList<NeoTaskCore> VisibleTasks = new();
+    private NeoTaskCore? FocusedTask;
     private int _firstVisibleIndex = 0;
     private const int _windowSize = 10;
 
     protected override void OnInitialized()
     {
-        // Generate 20 mock tasks
-        for (int i = 1; i <= 20; i++)
-        {
-            AllTasks.Add(new DomainTask
-            {
-                Id = Guid.NewGuid(),
-                Title = $"Task {i}",
-                Description = $"This is the detailed description for Task {i}. It contains important information about what needs to be done.",
-                Status = NeoTaskStatus.ToDo,
-                Priority = NeoTaskPriority.Medium
-            });
-        }
+        AllTasks = TaskService.GetTasks().ToList();
 
         // Initialize VisibleTasks with the first 10 tasks
         foreach (var task in AllTasks.Take(_windowSize))
@@ -96,19 +88,27 @@
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await scrollInfoService.InitializeAsync();
+        }
+    }
+
     public void Dispose()
     {
         scrollInfoService.OnScroll -= OnScroll;
     }
 
-    private string GetTaskClass(DomainTask task)
+    private string GetTaskClass(NeoTaskCore task)
     {
         if (FocusedTask?.Id == task.Id) return "focused";
         if (FocusedTask != null) return "dimmed";
         return "";
     }
 
-    private void SelectTask(DomainTask task)
+    private void SelectTask(NeoTaskCore task)
     {
         FocusedTask = task;
         StateHasChanged();
@@ -139,6 +139,7 @@
                 }
             }
         }
+        StateHasChanged();
     }
 
     private void MoveDown()
@@ -160,6 +161,7 @@
                 }
             }
         }
+        StateHasChanged();
     }
 
     private void ScrollUp()
