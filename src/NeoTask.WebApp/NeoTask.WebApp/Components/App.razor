@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["NeoTask.WebApp.styles.css"]" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
     <HeadOutlet />
@@ -30,5 +33,17 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    private string ThemeClass => HttpContext.Request.Cookies["theme"] ?? "theme-calm";
+    private string ThemeClass
+    {
+        get
+        {
+            var theme = HttpContext.Request.Cookies["theme"] ?? "theme-calm";
+            var fontAccessible = HttpContext.Request.Cookies["fontAccessible"];
+            if (fontAccessible == "true")
+            {
+                theme += " font-accessible";
+            }
+            return theme;
+        }
+    }
 }
