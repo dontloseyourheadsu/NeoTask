@@ -1,11 +1,17 @@
 html,
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.font-accessible {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
 }
 
 :root {
+    /* DO NOT CHANGE THESE COLORS - USER PREFERENCE */
     /* Default (Calm Focus) */
     --bg-primary: #FAFAFA;
     --text-primary: #2F3E46;
@@ -14,19 +20,23 @@ body {
     --action-color-secondary: #778DA9;
     /* Dusty Blue */
     --sidebar-bg: #778DA9;
+    --text-on-sidebar: #FFFFFF;
     --btn-text: #fff;
 }
 
 .theme-calm {
+    /* DO NOT CHANGE THESE COLORS - USER PREFERENCE */
     --bg-primary: #FAFAFA;
     --text-primary: #2F3E46;
     --action-color: #8FBC8F;
     --action-color-secondary: #778DA9;
     --sidebar-bg: #778DA9;
+    --text-on-sidebar: #FFFFFF;
     --btn-text: #fff;
 }
 
 .theme-low-sensory {
+    /* DO NOT CHANGE THESE COLORS - USER PREFERENCE */
     --bg-primary: #EAE7E2;
     --text-primary: #363636;
     --action-color: #BDB2FF;
@@ -34,10 +44,12 @@ body {
     --action-color-secondary: #84B6F4;
     /* Soft Teal */
     --sidebar-bg: #84B6F4;
+    --text-on-sidebar: #363636;
     --btn-text: #fff;
 }
 
 .theme-high-dopamine {
+    /* DO NOT CHANGE THESE COLORS - USER PREFERENCE */
     --bg-primary: #121212;
     --text-primary: #E0E0E0;
     --action-color: #FFADAD;
@@ -45,6 +57,7 @@ body {
     --action-color-secondary: #FDFFB6;
     /* Sunny Yellow */
     --sidebar-bg: #1E1E1E;
+    --text-on-sidebar: #E0E0E0;
     --btn-text: #121212;
 }
 
