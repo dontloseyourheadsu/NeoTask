@@ -11,63 +11,75 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="focus-container">
-    @if (FocusedTask != null)
-    {
-        <button class="unfocus-btn" @onclick="Unfocus">Unfocus Task</button>
-    }
-
-    <div class="task-list-container" id="taskList">
-        @foreach (var task in VisibleTasks)
+@if (FocusedTask == null)
+{
+    <div class="task-list-scroll-container">
+        @foreach (var task in AllTasks)
         {
-            <div id="@($"task-{task.Id}")" class="task-card @GetTaskClass(task)" @onclick="() => SelectTask(task)">
+            <div id="@($"task-{task.Id}")" class="task-card" @onclick="() => SelectTask(task)">
+                <span class="dimmed-title">@task.Title</span>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="focus-container">
+        <button class="unfocus-btn" @onclick="Unfocus">Unfocus Task</button>
 
-                @if (task.Id == FocusedTask?.Id)
+        <div class="task-list-container" id="taskList">
+            @foreach (var task in VisibleTasks)
+            {
+                @if (task != null)
                 {
-                    <div class="focused-content">
-                        <h1 class="task-title">@task.Title</h1>
-                        <button class="break-down-btn" @onclick:stopPropagation="true">Break Down</button>
-                        <p class="task-desc">@task.Description</p>
+                    <div id="@($"task-{task.Id}")" class="task-card @GetTaskClass(task)" @onclick="() => SelectTask(task)">
+
+                        @if (task.Id == FocusedTask?.Id)
+                        {
+                            <div class="focused-content">
+                                <h1 class="task-title">@task.Title</h1>
+                                <button class="break-down-btn" @onclick:stopPropagation="true">Break Down</button>
+                                <p class="task-desc">@task.Description</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="dimmed-title">@task.Title</span>
+                        }
                     </div>
                 }
                 else
                 {
-                    <span class="dimmed-title">@task.Title</span>
+                    <div class="task-card empty-slot"></div>
                 }
-            </div>
-        }
-    </div>
+            }
+        </div>
 
-    <div class="controls">
-        <button class="control-btn" @onclick="MoveUp">
-            <span class="material-icons">arrow_upward</span>
-            <span>Up</span>
-        </button>
-        <button class="control-btn" @onclick="MoveDown">
-            <span class="material-icons">arrow_downward</span>
-            <span>Down</span>
-        </button>
+        <div class="controls">
+            <button class="control-btn" @onclick="MoveUp">
+                <span class="material-icons">arrow_upward</span>
+                <span>Up</span>
+            </button>
+            <button class="control-btn" @onclick="MoveDown">
+                <span class="material-icons">arrow_downward</span>
+                <span>Down</span>
+            </button>
+        </div>
     </div>
-</div>
+}
 
 @code {
     private List<NeoTaskCore> AllTasks = new();
-    private LinkedList<NeoTaskCore> VisibleTasks = new();
+    private LinkedList<NeoTaskCore?> VisibleTasks = new();
     private NeoTaskCore? FocusedTask;
     private int _firstVisibleIndex = 0;
-    private const int _windowSize = 10;
+    private const int DefaultWindowSize = 20;
+    private const int FocusedWindowSize = 3;
 
     protected override void OnInitialized()
     {
         AllTasks = TaskService.GetTasks().ToList();
-
-        // Initialize VisibleTasks with the first 10 tasks
-        foreach (var task in AllTasks.Take(_windowSize))
-        {
-            VisibleTasks.AddLast(task);
-        }
-
-        // Initial view: List view (no focus)
+        // No need to initialize list view for scrolling mode as we render AllTasks directly
         FocusedTask = null;
 
         scrollInfoService.OnScroll += OnScroll;
@@ -75,6 +87,9 @@
 
     private void OnScroll(object? sender, int yValue)
     {
+        // Only handle custom scroll when focused
+        if (FocusedTask == null) return;
+
         // yValue from wheel event is deltaY (positive = down, negative = up)
         // Or scroll position if actual scroll.
         // Since we use wheel for navigation in fixed container:
@@ -111,7 +126,27 @@
     private void SelectTask(NeoTaskCore task)
     {
         FocusedTask = task;
+        UpdateFocusedView();
         StateHasChanged();
+    }
+
+    private void UpdateFocusedView()
+    {
+        if (FocusedTask == null) return;
+
+        VisibleTasks.Clear();
+        int index = AllTasks.FindIndex(t => t.Id == FocusedTask.Id);
+
+        // Previous
+        if (index > 0) VisibleTasks.AddLast(AllTasks[index - 1]);
+        else VisibleTasks.AddLast((NeoTaskCore?)null);
+
+        // Current
+        VisibleTasks.AddLast(FocusedTask);
+
+        // Next
+        if (index < AllTasks.Count - 1) VisibleTasks.AddLast(AllTasks[index + 1]);
+        else VisibleTasks.AddLast((NeoTaskCore?)null);
     }
 
     private void Unfocus()
@@ -122,67 +157,55 @@
 
     private void MoveUp()
     {
-        if (FocusedTask == null)
-        {
-            ScrollUp();
-        }
-        else
-        {
-            var index = AllTasks.FindIndex(t => t.Id == FocusedTask.Id);
-            if (index > 0)
-            {
-                FocusedTask = AllTasks[index - 1];
-                // If the new focused task is above the visible window, scroll up
-                if (index - 1 < _firstVisibleIndex)
-                {
-                    ScrollUp();
-                }
-            }
-        }
+        if (FocusedTask == null) return;
+        MoveFocusUp();
         StateHasChanged();
     }
 
     private void MoveDown()
     {
-        if (FocusedTask == null)
-        {
-            ScrollDown();
-        }
-        else
-        {
-            var index = AllTasks.FindIndex(t => t.Id == FocusedTask.Id);
-            if (index < AllTasks.Count - 1)
-            {
-                FocusedTask = AllTasks[index + 1];
-                // If the new focused task is below the visible window, scroll down
-                if (index + 1 >= _firstVisibleIndex + _windowSize)
-                {
-                    ScrollDown();
-                }
-            }
-        }
+        if (FocusedTask == null) return;
+        MoveFocusDown();
         StateHasChanged();
     }
 
-    private void ScrollUp()
+    private void MoveFocusUp()
     {
-        if (_firstVisibleIndex > 0)
+        if (FocusedTask == null) return;
+
+        int index = AllTasks.FindIndex(t => t.Id == FocusedTask.Id);
+        if (index > 0)
         {
+            FocusedTask = AllTasks[index - 1];
+
+            // Update VisibleTasks for sliding window
             VisibleTasks.RemoveLast();
-            _firstVisibleIndex--;
-            VisibleTasks.AddFirst(AllTasks[_firstVisibleIndex]);
-            StateHasChanged();
+
+            int newPrevIndex = index - 2;
+            if (newPrevIndex >= 0)
+                VisibleTasks.AddFirst(AllTasks[newPrevIndex]);
+            else
+                VisibleTasks.AddFirst((NeoTaskCore?)null);
         }
     }
 
-    private void ScrollDown()
+    private void MoveFocusDown()
     {
-        if (_firstVisibleIndex + _windowSize < AllTasks.Count)
+        if (FocusedTask == null) return;
+
+        int index = AllTasks.FindIndex(t => t.Id == FocusedTask.Id);
+        if (index < AllTasks.Count - 1)
         {
+            FocusedTask = AllTasks[index + 1];
+
+            // Update VisibleTasks for sliding window
             VisibleTasks.RemoveFirst();
-            VisibleTasks.AddLast(AllTasks[_firstVisibleIndex + _windowSize]);
-            _firstVisibleIndex++;
-            StateHasChanged();
+
+            int newNextIndex = index + 2;
+            if (newNextIndex < AllTasks.Count)
+                VisibleTasks.AddLast(AllTasks[newNextIndex]);
+            else
+                VisibleTasks.AddLast((NeoTaskCore?)null);
         }
     }
 
