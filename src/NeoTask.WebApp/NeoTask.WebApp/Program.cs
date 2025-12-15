@@ -19,6 +19,16 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
+// Increase SignalR timeout to prevent frequent disconnections
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options => { options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(30); })
+    .AddHubOptions(options =>
+    {
+        options.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
+        options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+        options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+    });
+
 builder.Services.AddScoped<ThemeState>();
 builder.Services.AddScoped<NeoTask.WebApp.Services.IScrollInfoService, NeoTask.WebApp.Services.ScrollInfoService>();
 builder.Services.AddSingleton<NeoTask.WebApp.Services.Tasks.Queries.ITaskQueryService, NeoTask.WebApp.Services.Tasks.Queries.TaskQueryService>();
