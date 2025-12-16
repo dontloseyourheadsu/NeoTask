@@ -2,10 +2,17 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
 }
 
 main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
 }
 
 .sidebar {
@@ -56,7 +63,7 @@ main {
 
     .sidebar {
         width: 250px;
-        height: 100vh;
+        height: 100%;
         position: sticky;
         top: 0;
     }
@@ -78,6 +85,14 @@ main {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
+}
+
+article.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
 }
 
 #blazor-error-ui {
