@@ -1,5 +1,6 @@
 using NeoTask.Domain.Tasks;
 using NeoTask.Domain.Tasks.Attributes;
+using NeoTask.WebApp.Models.Query;
 
 namespace NeoTask.WebApp.Services.Tasks.Queries;
 
@@ -33,6 +34,21 @@ public class TaskQueryService : ITaskQueryService
             });
         }
 
+        // Add a few dateless tasks for toggling
+        for (int i = 21; i <= 25; i++)
+        {
+            _tasks.Add(new NeoTaskCore
+            {
+                Id = Guid.NewGuid(),
+                Title = $"Task {i}",
+                Description = $"This is a dateless task {i}.",
+                Status = NeoTaskStatus.ToDo,
+                Priority = NeoTaskPriority.Low,
+                GoalDate = null,
+                EstimatedDuration = TimeSpan.FromMinutes(45)
+            });
+        }
+
         // Sort by GoalDate for the calendar view
         _tasks.Sort((a, b) => Nullable.Compare(a.GoalDate, b.GoalDate));
     }
@@ -45,5 +61,47 @@ public class TaskQueryService : ITaskQueryService
     public NeoTaskCore? GetTask(Guid id)
     {
         return _tasks.FirstOrDefault(t => t.Id == id);
+    }
+
+    public IEnumerable<NeoTaskCore> QueryTasks(QueryRequest request)
+    {
+        IEnumerable<NeoTaskCore> query = _tasks;
+
+        // Status filter
+        if (!string.IsNullOrWhiteSpace(request.Status) && Enum.TryParse<NeoTaskStatus>(request.Status, true, out var status))
+        {
+            query = query.Where(t => t.Status == status);
+        }
+
+        // Priority filter
+        if (!string.IsNullOrWhiteSpace(request.Priority) && Enum.TryParse<NeoTaskPriority>(request.Priority, true, out var priority))
+        {
+            query = query.Where(t => t.Priority == priority);
+        }
+
+        // Presence of date filter inferred from date range; when range provided, only dated tasks are considered
+        if (request.GoalDateFrom.HasValue && request.GoalDateTo.HasValue)
+        {
+            query = query.Where(t => t.GoalDate.HasValue);
+        }
+
+        // Date range filter
+        if (request.GoalDateFrom.HasValue && request.GoalDateTo.HasValue)
+        {
+            var from = request.GoalDateFrom.Value;
+            var to = request.GoalDateTo.Value;
+            query = query.Where(t => t.GoalDate.HasValue && t.GoalDate.Value >= from && t.GoalDate.Value <= to);
+        }
+
+        // Sort by GoalDate then Title
+        query = query.OrderBy(t => t.GoalDate.HasValue ? 0 : 1)
+                     .ThenBy(t => t.GoalDate)
+                     .ThenBy(t => t.Title);
+
+        // Pagination
+        var skip = Math.Max(0, (request.PageNumber - 1) * request.PageSize);
+        query = query.Skip(skip).Take(request.PageSize);
+
+        return query.ToList();
     }
 }
