@@ -4,6 +4,10 @@ body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color 0.3s ease, color 0.3s ease;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    /* Prevent body scroll, handle in components */
 }
 
 body.font-accessible {
