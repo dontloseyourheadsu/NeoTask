@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @using NeoTask.Domain.Tasks.Attributes
 @using NeoTask.Domain.Tasks
+@using NeoTask.WebApp.Models.Query
 @using NeoTask.WebApp.Services
 @using NeoTask.WebApp.Services.Tasks.Queries
 @inject IScrollInfoService scrollInfoService
@@ -105,6 +106,11 @@
     private int _firstVisibleIndex = 0;
     private const int DefaultWindowSize = 20;
     private const int FocusedWindowSize = 3;
+    private DateTime _currentDay = DateTime.Today;
+    private bool _showDateless = false;
+
+    private string CurrentDateText => _showDateless ? "Dateless Tasks" : _currentDay.ToString("dddd, MMM d, yyyy");
+    private string ToggleLabel => _showDateless ? "Show Dated" : "Show Dateless";
 
     protected override void OnInitialized()
     {
@@ -113,6 +119,24 @@
         FocusedTask = null;
 
         scrollInfoService.OnScroll += OnScroll;
+    }
+
+    private void LoadTasksForCurrentView()
+    {
+        if (_showDateless)
+        {
+            var req = new QueryRequest(pageNumber: 1, pageSize: 200);
+            AllTasks = TaskService.QueryTasks(req).ToList();
+            // Filter dateless client-side since request has no date range
+            AllTasks = AllTasks.Where(t => !t.GoalDate.HasValue).ToList();
+        }
+        else
+        {
+            var start = _currentDay.Date;
+            var end = start.AddDays(1).AddTicks(-1);
+            var req = new QueryRequest(goalDateFrom: start, goalDateTo: end, pageNumber: 1, pageSize: 200);
+            AllTasks = TaskService.QueryTasks(req).ToList();
+        }
     }
 
     private void OnScroll(object? sender, int yValue)
@@ -249,5 +273,31 @@
         {
             // Ignore JS errors for now
         }
+    }
+
+    private void PreviousDay()
+    {
+        if (_showDateless) return;
+        Unfocus();
+        _currentDay = _currentDay.AddDays(-1);
+        LoadTasksForCurrentView();
+        StateHasChanged();
+    }
+
+    private void NextDay()
+    {
+        if (_showDateless) return;
+        Unfocus();
+        _currentDay = _currentDay.AddDays(1);
+        LoadTasksForCurrentView();
+        StateHasChanged();
+    }
+
+    private void ToggleDateless()
+    {
+        _showDateless = !_showDateless;
+        Unfocus();
+        LoadTasksForCurrentView();
+        StateHasChanged();
     }
 }
