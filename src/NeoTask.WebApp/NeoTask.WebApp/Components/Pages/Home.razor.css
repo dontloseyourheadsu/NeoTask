@@ -1,7 +1,44 @@
+.home-grid {
+    display: grid;
+    grid-template-columns: 0.6fr 1.8fr 0.6fr;
+    gap: 16px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.grid-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    overflow: hidden;
+}
+
+.grid-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    height: 100%;
+}
+
+.grid-right .toggle-btn {
+    align-self: flex-end;
+}
+
+.side-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin-top: 24px;
+}
+
 .focus-container {
     position: relative;
     width: 100%;
-    height: 85vh;
+    flex: 1;
     /* Adjust to fit within the layout */
     background-color: var(--bg-primary);
     display: flex;
@@ -11,12 +48,77 @@
     border-radius: 8px;
 }
 
+.date-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 8px 0;
+    flex-shrink: 0;
+}
+
+.current-date {
+    flex: 0 0 auto;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 12px;
+    background-color: var(--sidebar-bg);
+    color: var(--text-on-sidebar);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.title-divider {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.25);
+    margin: 8px 0 16px 0;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.control-btn.small {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+}
+
+.control-btn.small .btn-text {
+    display: none;
+}
+
+.toggle-btn {
+    margin-left: 16px;
+    margin-right: 8px;
+    height: 44px;
+    padding: 0 12px;
+    background-color: var(--action-color-secondary);
+    color: var(--btn-text);
+    border: none;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.task-list-scroll-container {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+}
+
 .task-list-container {
     flex: 1;
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     overflow: hidden;
     /* Always hidden, controlled by buttons/wheel */
     padding: 20px;
@@ -48,6 +150,8 @@
     border: 1px solid transparent;
     color: var(--text-on-sidebar);
     flex-shrink: 0;
+    z-index: 1;
+    position: relative;
 }
 
 .task-card:hover {
@@ -58,6 +162,7 @@
 
 .task-card.focused {
     width: 85%;
+    height: auto;
     min-height: 60vh;
     /* Reduced height as requested */
     opacity: 1;
@@ -66,7 +171,7 @@
     border: 2px solid var(--action-color);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     z-index: 10;
-    margin: 20px 0;
+    margin: -5rem 0;
     justify-content: flex-start;
     padding-top: 40px;
 }
@@ -127,17 +232,18 @@
 }
 
 .unfocus-btn {
-    position: absolute;
-    top: 20px;
-    right: 120px;
     padding: 10px 20px;
     background-color: var(--action-color-secondary);
     color: var(--btn-text);
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    z-index: 2002;
     transition: filter 0.2s;
+}
+
+.unfocus-btn.center {
+    display: block;
+    margin: 8px auto 12px auto;
 }
 
 .unfocus-btn:hover {
@@ -202,8 +308,7 @@
 }
 
 .task-list-scroll-container {
-    width: 100%;
-    height: 85vh;
+    height: calc(100vh - 11rem);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
